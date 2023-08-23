@@ -1,5 +1,6 @@
 import { Task } from './tasks.entity';
 import { AppDataSource } from '../../index';
+import { instanceToPlain } from 'class-transformer';
 
 export class TasksController {
   constructor(
@@ -10,16 +11,21 @@ export class TasksController {
 
   public async getAll(): Promise<Task[]> {
     try {
-      const allTasks: Task[] = await this.taskRepository.find({
-        order: {
-          date: 'ASC',
+      let allTasks: Task[] = await this.taskRepository.find(
+        {
+          order: {
+            date: 'ASC',
+          },
         },
-      });
-      console.log(allTasks)
+      );
+      
+      // Convert Task object to plain instance
+      allTasks = instanceToPlain(allTasks) as Task[];
+
       return allTasks;
     } catch (errors) {
       console.log(errors);
-      throw errors; 
+      throw errors;
     }
   }
 }
