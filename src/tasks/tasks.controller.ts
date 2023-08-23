@@ -23,7 +23,7 @@ class TasksController {
 
       // Convert Task object to plain instance
       allTasks = instanceToPlain(allTasks) as Task[];
-
+      console.log(allTasks)
       return res.json(allTasks).status(200);
     } catch (_errors) {
       return res
