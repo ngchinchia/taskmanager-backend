@@ -1,6 +1,6 @@
-import { Task } from './tasks.entity'; 
+import { Task } from './tasks.entity';
 import { Response, Request } from 'express';
-import { validationResult } from 'express-validator'; 
+import { validationResult } from 'express-validator';
 import { TaskService } from './tasks.service';
 
 class TasksController {
@@ -9,15 +9,19 @@ class TasksController {
     req: Request,
     res: Response,
   ): Promise<Response> {
-     
+    const errors = validationResult(req);
 
-    try { 
-      const allTasks: Task[] = await TaskService.getAll() 
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ errors: errors.array() });
+    }
+
+    try {
+      const allTasks: Task[] = await TaskService.getAll();
       return res.json(allTasks).status(200);
     } catch (_errors) {
-      return res
-        .json({ error: _errors })
-        .status(500);
+      return res.json({ error: _errors }).status(500);
     }
   }
 
@@ -33,16 +37,14 @@ class TasksController {
       return res
         .status(400)
         .json({ errors: errors.array() });
-    } 
+    }
 
     try {
-      const createdTask = await TaskService.create(req) 
+      const createdTask = await TaskService.create(req);
 
       return res.json(createdTask).status(201);
     } catch (errors) {
-      return res
-        .json({ error: errors })
-        .status(500);
+      return res.json({ error: errors }).status(500);
     }
   }
 
@@ -58,16 +60,14 @@ class TasksController {
       return res
         .status(400)
         .json({ errors: errors.array() });
-    } 
+    }
 
     try {
-      const updatedTask = await TaskService.update(req) 
+      const updatedTask = await TaskService.update(req);
 
       return res.json(updatedTask).status(200);
     } catch (errors) {
-      return res
-        .json({ error: errors })
-        .status(500);
+      return res.json({ error: errors }).status(500);
     }
 
     // Convert updated task instance to an object
