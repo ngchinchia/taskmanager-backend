@@ -1,5 +1,5 @@
 import express, {
-  Express
+  Express, NextFunction, Request, Response
 } from 'express';
 import dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
@@ -13,6 +13,14 @@ const app: Express = express();
 dotenv.config();
 
 // Parse request Body -> process incoming json and convert to js obj
+const allowCrossDomain = (req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+};
+app.use(allowCrossDomain);
+
 app.use(bodyParser.json())
 
 // Use CORS install types as well
